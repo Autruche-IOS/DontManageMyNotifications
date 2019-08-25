@@ -1,9 +1,9 @@
 Package: com.autruche.dontmanagemynotifications
 Name: DontManageMyNotifications
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 1.0.0
 Architecture: iphoneos-arm
-Description: Remove the Manage section of the notification quick actions
+Description: Remove the Manage section of the notification quick actions. IOS 12 compatible.
 Maintainer: Autruche <https://github.com/Autruche-IOS>
 Author: Autruche <https://github.com/Autruche-IOS>
 Section: Tweaks
