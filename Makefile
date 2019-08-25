@@ -1,3 +1,5 @@
+DEBUG=0
+FINALPACKAGE=1
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
