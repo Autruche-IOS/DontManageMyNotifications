@@ -1,9 +1,26 @@
+// No manage button on notification swipe
 @interface NCNotificationListCellActionButtonsView : UIView
 @property (nonatomic,retain) UIStackView * buttonsStackView;
 @end
 
 @interface NCNotificationListCellActionButton : UIControl
 @end
+
+// No option on top of the quick reply box
+@interface PLPlatterHeaderContentView : UIView
+@end
+
+@interface PLExpandedPlatterHeaderContentView : PLPlatterHeaderContentView
+@end
+
+// Moving down the close arrow on the quick reply box
+@interface PLExpandedPlatterView : UIView
+@end
+
+@interface NCNotificationLongLookView : PLExpandedPlatterView
+@property (nonatomic,readonly) UIControl * dismissControl;
+@end
+
 
 %hook NCNotificationListCellActionButtonsView
 -(void)layoutSubviews {
@@ -17,7 +34,24 @@
     if (buttonsArray.count == 3)
     {
         // Remove the Manage option
-        [self.buttonsStackView removeArrangedSubview:buttonsArray[0]];
+        [buttonsArray[0] removeFromSuperview];
     }
+}
+%end
+
+%hook PLExpandedPlatterHeaderContentView
+-(void)_configureUtilityButton {
+    // Do nothing, in order not to generate that ugly manage buttun
+}
+%end
+
+%hook NCNotificationLongLookView
+-(void)layoutSubviews {
+    %orig;
+
+    // Move down the close cross
+    CGRect rect = self.dismissControl.frame;
+    rect.origin.y += 52;
+    self.dismissControl.frame = rect;
 }
 %end
