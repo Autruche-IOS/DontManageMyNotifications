@@ -1,26 +1,4 @@
-// No manage button on notification swipe
-@interface NCNotificationListCellActionButtonsView : UIView
-@property (nonatomic,retain) UIStackView * buttonsStackView;
-@end
-
-@interface NCNotificationListCellActionButton : UIControl
-@end
-
-// No option on top of the quick reply box
-@interface PLPlatterHeaderContentView : UIView
-@end
-
-@interface PLExpandedPlatterHeaderContentView : PLPlatterHeaderContentView
-@end
-
-// Moving down the close arrow on the quick reply box
-@interface PLExpandedPlatterView : UIView
-@end
-
-@interface NCNotificationLongLookView : PLExpandedPlatterView
-@property (nonatomic,readonly) UIControl * dismissControl;
-@end
-
+#import "Tweak.h"
 
 %hook NCNotificationListCellActionButtonsView
 -(void)layoutSubviews {
@@ -39,9 +17,12 @@
 }
 %end
 
-%hook PLExpandedPlatterHeaderContentView
--(void)_configureUtilityButton {
-    // Do nothing, in order not to generate that ugly manage buttun
+%hook PLPlatterHeaderContentView
+-(void)layoutSubviews {
+    %orig;
+
+    // Remove the ugly option button
+    [self.utilityButton removeFromSuperview];
 }
 %end
 
@@ -49,9 +30,47 @@
 -(void)layoutSubviews {
     %orig;
 
-    // Move down the close cross
-    CGRect rect = self.dismissControl.frame;
-    rect.origin.y += 52;
-    self.dismissControl.frame = rect;
+    // Base location
+    CGFloat baseLocation = self.dismissControl.frame.origin.y;
+    CGRect headerRect;
+    BOOL foundHeader = false;
+
+    // Move the header to the top
+    for (UIView *view in self.subviews)
+    {
+		if ([view isMemberOfClass:[%c(PLExpandedPlatterHeaderContentView) class]])
+        {
+            headerRect          = view.frame;
+            headerRect.origin.y = baseLocation;
+            view.frame          = headerRect;
+
+            foundHeader = true;
+            continue;
+		}
+
+        if (foundHeader)
+        {
+            CGRect lineRect   = view.frame;
+            lineRect.origin.y = baseLocation + headerRect.size.height;
+            view.frame        = lineRect;
+            break;
+        }
+	}
+
+    // Just in case the header is missing
+    if (foundHeader)
+    {
+        // Move up the core
+        CGFloat baseScrollLocation = baseLocation + headerRect.size.height - 2;
+        CGRect scrollRect          = self.scrollView.frame;
+        //scrollRect.size.height    += scrollRect.origin.y - baseScrollLocation;
+        scrollRect.origin.y        = baseScrollLocation;
+        self.scrollView.frame      = scrollRect;
+
+        // Move down the close cross a bit
+        CGRect closeRect = self.dismissControl.frame;
+        closeRect.origin.y += (headerRect.size.height - closeRect.size.height) / 2;
+        self.dismissControl.frame = closeRect;
+    }
 }
 %end
