@@ -10,12 +10,3 @@
 @interface PLPlatterHeaderContentView : UIView
 @property (nonatomic,readonly) UIButton * utilityButton;
 @end
-
-// Moving down the close arrow on the quick reply box
-@interface PLExpandedPlatterView : UIView
-@end
-
-@interface NCNotificationLongLookView : PLExpandedPlatterView
-@property (nonatomic,readonly) UIControl * dismissControl;
-@property (nonatomic,readonly) UIScrollView * scrollView;
-@end
