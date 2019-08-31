@@ -21,7 +21,21 @@
 -(void)layoutSubviews {
     %orig;
 
-    // Remove the ugly option button
-    [self.utilityButton removeFromSuperview];
+    // Check if we are on a notification (https://stackoverflow.com/a/2309978)
+    BOOL isNotification = false;
+    for (UIView *next = [self superview]; next; next = next.superview)
+    {
+        if ([next isKindOfClass:[%c(NCNotificationLongLookView) class]])
+        {
+            isNotification = true;
+            break;
+        }
+    }
+
+    if (isNotification)
+    {
+        // Remove the ugly option button
+        [self.utilityButton removeFromSuperview];
+    }
 }
 %end
